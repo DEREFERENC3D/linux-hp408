@@ -1,6 +1,6 @@
 # Maintainer: Jan Alexander Steffens (heftig) <heftig@archlinux.org>
 
-pkgbase=linux
+pkgbase=linux-hp408
 pkgver=7.2.11.arch1
 pkgrel=1
 pkgdesc='Linux'
