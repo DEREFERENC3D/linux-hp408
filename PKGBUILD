@@ -46,6 +46,7 @@ _srctag=v${pkgver%.*}-${pkgver##*.}
 source=(
   https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.{xz,sign}
   $url/releases/download/$_srctag/linux-$_srctag.patch.zst{,.sig}
+  atomisp-gpio1-active-low.patch
 )
 source_x86_64=(config.x86_64)
 validpgpkeys=(
@@ -56,14 +57,16 @@ validpgpkeys=(
 b2sums=('36a455379876a3f452dce7347211ac34ddfda9a445b0b8c0ee92664429a8ea85d2f1a101126b6d748545aaf18e3534f8db53d6110952f3d5487d029ff0f9a800'
         'SKIP'
         '06f49715b71884a0cbad51ab4b526c1516926cb2429e7a6e485aa48ebf277811dec391ae2264501245654275a84af1df3780bf8bf8df755cf47670d6c9397703'
-        'SKIP')
+        'SKIP'
+        '961e296bc19a32bceb21043ca9fae7513f8c769f92e28cd0c58060740533ee162333d884782a49dd262a5bfa04ce4a4671b14e5b03c5b996edb3be1ebd8a9555')
 b2sums_x86_64=('a9597a7108f7e507a5b32f9e7badff4934f6636184a0deaa2d63a5a6f948d686efa5fd720cb198dbe1c3c24f32b1650273ec4915e8f993bc587e929f275b5726')
 
 # https://www.kernel.org/pub/linux/kernel/v7.x/sha256sums.asc
 sha256sums=('fd0fc479f983a8c05313f13e9c36330fe6651cf725396748c40d5cd93fa1e6a4'
             'SKIP'
             '741d473c4db335d97d9e1d9b8be9337090522550804fe6454ba336d21e580fd6'
-            'SKIP')
+            'SKIP'
+            'bee2eb0b9c854fd31a41c6bbc3c94fb8e1abca4876117764e90a2cb4a47ff705')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase

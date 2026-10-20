@@ -1,0 +1,40 @@
+--- a/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c	2026-10-19 22:45:03.613934095 +0000
++++ b/drivers/staging/media/atomisp/pci/atomisp_gmin_platform.c	2026-10-19 22:45:28.440445459 +0000
+@@ -66,6 +66,17 @@
+ #define CRYSTAL_ON		0x63
+ #define CRYSTAL_OFF		0x62
+ 
++/*
++ * On some boards (e.g. HP Pro Tablet 408, OV2722 on CAM1) the second ACPI GPIO
++ * of the sensor is wired as an active-high PWDN, while the sensor drivers
++ * assume an active-low PWDN# (driven high when powering up). Setting this
++ * inverts gpio1 so that "on" drives the pin low.
++ */
++static bool gpio1_active_low;
++module_param(gpio1_active_low, bool, 0444);
++MODULE_PARM_DESC(gpio1_active_low,
++		 "Treat the sensor's second ACPI GPIO as active-low (invert it)");
++
+ struct gmin_subdev {
+ 	struct v4l2_subdev *subdev;
+ 	enum clock_rate clock_src;
+@@ -500,10 +511,17 @@
+ 		dev_info(dev, "will handle gpio0 via ACPI\n");
+ 
+ 	gs->gpio1 = gpiod_get_index(dev, NULL, 1, GPIOD_OUT_LOW);
+-	if (IS_ERR(gs->gpio1))
++	if (IS_ERR(gs->gpio1)) {
+ 		gs->gpio1 = NULL;
+-	else
++	} else {
+ 		dev_info(dev, "will handle gpio1 via ACPI\n");
++		if (gpio1_active_low) {
++			gpiod_toggle_active_low(gs->gpio1);
++			/* Re-assert the "off" level: logical 0 is now physical high */
++			gpiod_set_value(gs->gpio1, 0);
++			dev_info(dev, "gpio1 treated as active-low\n");
++		}
++	}
+ 
+ 	/*
+ 	 * FIXME:
